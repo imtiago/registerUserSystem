@@ -1,34 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import SweetAlert2 from "react-sweetalert2";
+
+interface IFormRegister {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+const schema = yup
+  .object({
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    email: yup.string().required(),
+    password: yup.string().required().min(8),
+    confirmPassword: yup.string().required(),
+  })
+  .required();
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormRegister>({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = (data: IFormRegister) => console.log(data);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <Box>
+      <Stack spacing={1} alignItems="center">
+        <Typography variant="h2">Cadastro de usuario</Typography>
+        <TextField name="firstName" label="primeiro nome" />
+        <TextField name="lastName" label="ultimo nome" />
+        <TextField name="email" type="email" label="email" />
+        <TextField name="password" type="password" label="senha" />
+        <TextField
+          name="confirmPassword"
+          type="password"
+          label=" confirmação de senha"
+        />
+        <Button variant="contained"> Cadastrar </Button>
+      </Stack>
+    </Box>
+  );
 }
 
-export default App
+export default App;
